@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="wheather.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+</head>
+<body>
+    <div class="card">
+        <div class="search">
+            <input class="sbar" placeholder="write any city name">
+            <button class="find"><i class="fa-solid fa-magnifying-glass"></i></button>
+        </div>
+        <div class="error">
+            <h2>Invalid City Name</h2>
+        </div>
+        <div class="wheather">
+            <i class="fa-solid fa-cloud-sun" id="wicon"></i>
+            <h1 class="temp" id="info">22&degC</h1>
+            <h2 class="city" id="info">New York</h2>
+            <div class="details">
+                <div class="col1">
+                    <i class="fa-solid fa-water"></i>
+                    <h2 class="humidity">64%</h2>
+                    <h3 class="hm">Humidity</h3>
+                </div>
+                <div class="col2">
+                    <i class="fa-solid fa-wind"></i>
+                    <h2 class="wind">15 Km/h</h2>
+                    <h3 class="ws">Wind Speed</h3>
+                 
+                </div>
+                
+            </div>
+        </div>
+    </div>
+<script>
+    let apikey="9d7edc4eab8c069aabeccf44cf3d1e31";
+    let apiurl="https://api.openweathermap.org/data/2.5/weather?units=metric&q=";
+    let sbox=document.querySelector(".sbar");
+    let sbtn=document.querySelector(".find");
+    let wheather=document.querySelector("#wicon");
+    let container=document.querySelector(".wheather");
+    async function checkwheather(city){
+        let response=await fetch(apiurl+city+`&appid=${apikey}`);
+        if (response.status == 404 ){
+            document.querySelector('.error').style.display='block';
+            document.querySelector(".wheather").style.display='none';
+        }
+        else{
+            var data=await response.json();
+        console.log(data);
+        document.querySelector(".city").innerHTML=data.name;
+        document.querySelector(".temp").innerHTML=Math.round(data.main.temp)+" &degC";
+        document.querySelector(".humidity").innerHTML=data.main.humidity+"%";
+        document.querySelector(".wind").innerHTML=data.wind.speed+"Km/h";
+        if(data.weather[0].main=='Clouds'){
+            wheather.classList.remove("fa-cloud-sun");
+            wheather.classList.add("fa-cloud");
+        
+        }
+        else if(data.weather[0].main=='Rain'){
+            wheather.classList.remove("fa-cloud-sun");
+            wheather.classList.add("fa-cloud-rain");
+        }
+        else if(data.weather[0].main=='Clear'){
+            wheather.classList.remove("fa-cloud-sun");
+            wheather.classList.add("fa-sun");
+        }
+        else if(data.weather[0].main=='Drizzle'){
+            wheather.classList.remove("fa-cloud-sun");
+            wheather.classList.add("fa-cloud-sun-rain");
+        }
+        else if(data.weather[0].main=='Mist'){
+            wheather.classList.remove("fa-cloud-sun");
+            wheather.classList.add("fa-cloud-sun");
+        }
+        else if(data.weather[0].main=='Snow'){
+            wheather.classList.remove("fa-cloud-sun");
+            wheather.classList.add("fa-snowflake");
+        }
+        document.querySelector(".wheather").style.display='block';
+        document.querySelector('.error').style.display='none';
+
+        }
+        
+    }
+    sbtn.addEventListener('click',()=>
+    checkwheather(sbox.value));
+
+    checkwheather()
+</script> 
+
+    
+</body>
+</html>
